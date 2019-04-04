@@ -1,12 +1,12 @@
-FROM alpine:3.8
+FROM alpine:latest
 
-# Install kubectl
-# Note: Latest version may be found on:
-# https://aur.archlinux.org/packages/kubectl-bin/
-ADD https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl /usr/local/bin/kubectl
+RUN apk update
+RUN apk add curl
 
-ENV HOME=/config
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN chmod u+x kubectl && mv kubectl /bin/kubectl
 
+# Install Pyton Stuff
 RUN apk update && \
     apk add python3 && \
     apk add python3-dev && \
@@ -20,19 +20,5 @@ RUN apk update && \
     rm -rf /var/cache/* \
     rm -rf /root/.cache/*
 
-RUN set -x && \
-    apk add --no-cache curl ca-certificates && \
-    chmod +x /usr/local/bin/kubectl && \
-    \
-    # Create non-root user (with a randomly chosen UID/GUI).
-    adduser kubectl -Du 2342 -h /config && \
-    \
-    # Basic check it works.
-    kubectl version --client
-
-COPY ./requirements.txt /app/requirements.txt
-RUN pip3 install -r requirements.txt
-
-USER kubectl
-
-ENTRYPOINT ["/usr/local/bin/kubectl"]
+ENTRYPOINT []
+CMD []
