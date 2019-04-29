@@ -20,5 +20,5 @@ RUN apk update && \
     rm -rf /var/cache/* \
     rm -rf /root/.cache/*
 
-ENTRYPOINT []
-CMD []
+ENTRYPOINT ["kubectl"]
+CMD ["--help"]
